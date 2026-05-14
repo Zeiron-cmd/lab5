@@ -1,14 +1,13 @@
 import pytest
+from fastapi.testclient import TestClient
 from main import app
 
-@pytest.fixture
-def client():
-    with app.test_client() as client:
-        yield client
+client = TestClient(app)
 
-def test_time_route(client):
-    response = client.get('/time')
-    data = response.get_json()
+def test_get_time():
+    response = client.get("/time")
     assert response.status_code == 200
+    data = response.json()
     assert "time" in data
-    assert data["time"] > 0  
+    assert isinstance(data["time"], int)
+    assert data["time"] > 0
